@@ -35,6 +35,46 @@ class User implements UserInterface
      */
     private $password;
 
+    /**
+     * @ORM\Column(type="string", length=80)
+     */
+    private $first_name;
+
+    /**
+     * @ORM\Column(type="string", length=80, nullable=true)
+     */
+    private $last_name;
+
+    /**
+     * @ORM\Column(type="string", length=36)
+     */
+    private $uuid;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_tos_accepted;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $profile_picture;
+
+    /**
+     * @ORM\Column(type="string", length=6, nullable=true)
+     */
+    private $gender;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $timezone;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $last_logged_in_at;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -111,5 +151,101 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->first_name;
+    }
+
+    public function setFirstName(string $first_name): self
+    {
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    public function setLastName(?string $last_name): self
+    {
+        $this->last_name = $last_name;
+
+        return $this;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getIsTosAccepted(): ?bool
+    {
+        return $this->is_tos_accepted;
+    }
+
+    public function setIsTosAccepted(bool $is_tos_accepted): self
+    {
+        $this->is_tos_accepted = $is_tos_accepted;
+
+        return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->profile_picture;
+    }
+
+    public function setProfilePicture(string $profile_picture): self
+    {
+        $this->profile_picture = $profile_picture;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): self
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    public function getLastLoggedInAt(): ?\DateTimeInterface
+    {
+        return $this->last_logged_in_at;
+    }
+
+    public function setLastLoggedInAt(?\DateTimeInterface $last_logged_in_at): self
+    {
+        $this->last_logged_in_at = $last_logged_in_at;
+
+        return $this;
     }
 }
