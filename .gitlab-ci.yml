@@ -1,4 +1,8 @@
 # Select image from https://hub.docker.com/_/php/
+stages:
+  - test
+  - build
+
 image: php:7.4
 
 # Select what we should cache
@@ -6,22 +10,6 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - vendor/
-
-before_script:
-  # Install git, the php image doesn't have installed
-  - apt-get update -yqq
-  - apt-get install git libzip-dev zip -yqq
-  - pecl install xdebug
-  - docker-php-ext-enable xdebug
-
-  # Install mysql driver
-  - docker-php-ext-install pdo_mysql zip
-
-  # Install composer
-  - curl --show-error --silent https://getcomposer.org/installer | php
-
-  # Install all project dependencies
-  - php composer.phar install
 
 services:
   - mysql:5.7
@@ -33,6 +21,7 @@ variables:
 # We test PHP7 with MySQL, but we allow it to fail
 test:
   image: php:7.4
+  stage: test
   variables:
     APP_NAME: "Symfony Dashboard"
     KERNEL_CLASS: "App\\Kernel"
@@ -43,6 +32,22 @@ test:
     GOOGLE_OAUTH2_CLIENT_ID: "xxxxxxxx"
     GOOGLE_OAUTH2_CLIENT_SECRET: "xxxxxxx"
   script:
+    # Install git, the php image doesn't have installed
+    - apt-get update -yqq
+    - apt-get install git libzip-dev zip -yqq
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+
+    # Install mysql driver
+    - docker-php-ext-install pdo_mysql zip
+
+    # Install composer
+    - curl --show-error --silent https://getcomposer.org/installer | php
+
+    # Install all project dependencies
+    - php composer.phar install
+
+    # Run PHPUnit
     - ./bin/phpunit --configuration phpunit.xml.dist --coverage-text --colors=never
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   allow_failure: true
