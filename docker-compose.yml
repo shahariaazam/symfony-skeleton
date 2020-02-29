@@ -1,0 +1,43 @@
+version: '2.2'
+
+# Let's build all the services required to run this app (dev version)
+# We need -
+# MySQL => Database
+# Nginx => Web Server
+# PHP-FPM
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: symfony
+      MYSQL_DATABASE: symfony  # Database will be created on start
+      MYSQL_USER: symfony      # Password for MySQL User. @TODO: In production, we have to retrieve it from CLI environment variable
+      MYSQL_PASSWORD: symfony
+  symfony:
+    container_name: symfony
+    build:
+      context: .
+      dockerfile: ./docker/web_app/Dockerfile
+    command: ./prepare.sh   # Reset database, run migration + fixtures
+    environment:
+      ON_DOCKER: "true"   # For testing purpose
+      DATABASE_URL: mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
+      APP_ENV: dev  # For debugging purpose we built it as a dev version
+      GOOGLE_OAUTH2_CLIENT_ID: ${GOOGLE_OAUTH2_CLIENT_ID} # Please pass this env variable from CLI during `docker-compose up`
+      GOOGLE_OAUTH2_CLIENT_SECRET: ${GOOGLE_OAUTH2_CLIENT_SECRET} # Please pass this env variable from CLI during `docker-compose up`
+    links:
+      - mysql
+    # Database must be ready before running this searvice
+    depends_on:
+      - mysql
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "8011:80"   # Webserver will run on http://localhost:8011
+    depends_on:
+      - symfony     # Web App service must be running
+      - mysql          # DB must be ready
