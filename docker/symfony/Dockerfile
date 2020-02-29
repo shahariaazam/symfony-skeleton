@@ -10,14 +10,14 @@ RUN set -xe \
     && apk del  .phpize-deps
 
 # Override php.ini settings
-COPY ./docker/web_app/app_custom.ini /usr/local/etc/php/conf.d/app_custom.ini
+COPY ./docker/symfony/app_custom.ini /usr/local/etc/php/conf.d/app_custom.ini
 
 WORKDIR /var/www/html
 
 COPY . /var/www/html
 
 # Prepare script copy and execution permission
-COPY ./docker/web_app/prepare.sh .
+COPY ./docker/symfony/prepare.sh .
 RUN chmod a+x ./prepare.sh
 
 # Install composer

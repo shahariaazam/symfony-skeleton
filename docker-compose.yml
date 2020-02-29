@@ -14,12 +14,21 @@ services:
       MYSQL_DATABASE: symfony  # Database will be created on start
       MYSQL_USER: symfony      # Password for MySQL User. @TODO: In production, we have to retrieve it from CLI environment variable
       MYSQL_PASSWORD: symfony
+    # We need to run healthcheck because we need to make sure that the initial & default
+    # database has been created
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=symfony --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
   symfony:
     container_name: symfony
     build:
       context: .
-      dockerfile: ./docker/web_app/Dockerfile
+      dockerfile: ./docker/symfony/Dockerfile
     command: ./prepare.sh   # Reset database, run migration + fixtures
+    volumes:
+    - ./var:/var/www/html/var
     environment:
       ON_DOCKER: "true"   # For testing purpose
       DATABASE_URL: mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
@@ -30,7 +39,8 @@ services:
       - mysql
     # Database must be ready before running this searvice
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy    # DB service must be in healthy state to start this App
   nginx:
     container_name: nginx
     build:
