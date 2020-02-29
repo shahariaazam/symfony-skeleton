@@ -20,6 +20,8 @@ security:
             guard:
                 authenticators:
                     - App\Security\PasswordAuthenticator
+                    - App\Security\GoogleAuthenticator
+                entry_point: App\Security\PasswordAuthenticator
             logout:
                 path: app_logout
                 # where to redirect after logout

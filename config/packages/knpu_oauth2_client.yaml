@@ -1,0 +1,11 @@
+knpu_oauth2_client:
+    clients:
+        # the key "google_oauth2" can be anything, it
+        # will create a service: "knpu.oauth2.client.google_oauth2"
+        google_oauth2:
+            # this will be one of the supported types as per library documentation
+            type: google
+            client_id: '%env(GOOGLE_OAUTH2_CLIENT_ID)%'
+            client_secret: '%env(GOOGLE_OAUTH2_CLIENT_SECRET)%'
+            # the route that user will be redirected to after
+            redirect_route: login_google_check  # Route will be /login/google/check

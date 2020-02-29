@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,6 +25,26 @@ class AuthController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+    /**
+     * Link to this controller to start the "connect" process.
+     *
+     * @Route("/login/google", name="login_google")
+     */
+    public function loginWithGoogle(ClientRegistry $clientRegistry)
+    {
+        // It will redirect to Google
+        return $clientRegistry
+            ->getClient('google_oauth2') // key used in config/packages/knpu_oauth2_client.yaml
+            ->redirect(['profile', 'email'], []);    // Required scope for Google OAuth2 login
+    }
+
+    /**
+     * @Route("/login/google/check", name="login_google_check")
+     */
+    public function loginWithGoogleCheck()
+    {
     }
 
     /**
