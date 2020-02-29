@@ -6,9 +6,11 @@
     <h1>Register</h1>
 
     {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.first_name) }}
+        {{ form_row(registrationForm.last_name) }}
         {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+        {{ form_row(registrationForm.password) }}
+        {{ form_row(registrationForm.is_tos_accepted) }}
 
         <button class="btn">Register</button>
     {{ form_end(registrationForm) }}

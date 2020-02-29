@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200229160959 extends AbstractMigration
+final class Version20200229175559 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,7 +22,7 @@ final class Version20200229160959 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE user ADD first_name VARCHAR(80) NOT NULL, ADD last_name VARCHAR(80) DEFAULT NULL, ADD uuid VARCHAR(36) NOT NULL, ADD is_tos_accepted TINYINT(1) NOT NULL, ADD profile_picture VARCHAR(255) NOT NULL, ADD gender VARCHAR(6) DEFAULT NULL, ADD timezone VARCHAR(20) NOT NULL, ADD last_logged_in_at DATETIME DEFAULT NULL');
+        $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) DEFAULT NULL, first_name VARCHAR(80) NOT NULL, last_name VARCHAR(80) DEFAULT NULL, uuid VARCHAR(36) NOT NULL, is_tos_accepted TINYINT(1) NOT NULL, profile_picture VARCHAR(255) NOT NULL, gender VARCHAR(6) DEFAULT NULL, timezone VARCHAR(20) NOT NULL, last_logged_in_at DATETIME DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), UNIQUE INDEX UNIQ_8D93D649D17F50A6 (uuid), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
     }
 
     public function down(Schema $schema) : void
@@ -30,6 +30,6 @@ final class Version20200229160959 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE user DROP first_name, DROP last_name, DROP uuid, DROP is_tos_accepted, DROP profile_picture, DROP gender, DROP timezone, DROP last_logged_in_at');
+        $this->addSql('DROP TABLE user');
     }
 }

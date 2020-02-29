@@ -3,15 +3,21 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * @ORM\HasLifecycleCallbacks
+ *
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface
 {
+    use UuidTraits;
+    use TimestampableEntity;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -27,11 +33,11 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $password;
 
@@ -46,19 +52,19 @@ class User implements UserInterface
     private $last_name;
 
     /**
-     * @ORM\Column(type="string", length=36)
+     * @ORM\Column(type="string", length=36, unique=true)
      */
     private $uuid;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_tos_accepted;
+    private $is_tos_accepted = false;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $profile_picture;
+    private $profile_picture = "http://lorempixel.com/800/800/abstract";
 
     /**
      * @ORM\Column(type="string", length=6, nullable=true)
@@ -68,7 +74,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=20)
      */
-    private $timezone;
+    private $timezone = "UTC";
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -149,8 +155,7 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->password = null;
     }
 
     public function getFirstName(): ?string
@@ -177,16 +182,9 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getUuid(): ?string
+    public function getFullName(): ?string
     {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
+        return $this->first_name . " " . $this->last_name;
     }
 
     public function getIsTosAccepted(): ?bool
