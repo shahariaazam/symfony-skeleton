@@ -1,10 +1,3 @@
-# Select image from https://hub.docker.com/_/php/
-stages:
-  - test
-  - build
-
-image: php:7.4
-
 # Select what we should cache
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -18,7 +11,6 @@ variables:
   # Configure mysql service (https://hub.docker.com/_/mysql/)
   MYSQL_ROOT_PASSWORD: symfony
 
-# We test PHP7 with MySQL, but we allow it to fail
 test:
   image: php:7.4
   stage: test
@@ -50,16 +42,3 @@ test:
     # Run PHPUnit
     - ./bin/phpunit --configuration phpunit.xml.dist --coverage-text --colors=never
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
-  allow_failure: true
-
-build:
-  image: docker:19.03.1
-  stage: build
-  services:
-    - docker:19.03.1-dind
-  variables:
-    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $IMAGE_TAG -f ./docker/web_app/Dockerfile .
-    - docker push $IMAGE_TAG
