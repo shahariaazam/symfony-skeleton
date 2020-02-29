@@ -1,0 +1,30 @@
+{% extends 'login_layout.html.twig' %}
+
+{% block body %}
+
+    <form class="form-signin" method="post">
+
+    {# Symfony Logo SVG #}
+    <img src="https://symfony.com/logos/symfony_black_02.png" style="width: 200px;" class="mb-5">
+    {# End of Symfony Logo SVG #}
+
+    {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+    <h1 class="h3 mb-3 font-weight-normal mt-3">Create account</h1>
+    <small>Already have an account, please <a href="{{ path('app_login') }}">Login</a></small>
+    <hr>
+
+    {# Display signup form #}
+    {{ form(form) }}
+
+    </form>
+
+{% endblock %}

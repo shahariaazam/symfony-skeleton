@@ -1,0 +1,42 @@
+{% extends 'login_layout.html.twig' %}
+
+{% block body %}
+
+    <form class="form-signin" method="post">
+
+        {# Symfony Logo SVG #}
+        <img src="/assets/img/symfony_black_02.png" style="width: 200px;">
+        {# End of Symfony Logo SVG #}
+
+    {% if error %}
+        <div class="alert alert-danger mt-5">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+    <h1 class="h3 mb-3 font-weight-normal mt-5">Please sign in</h1>
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="email" value="{{ last_username }}">
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <br>
+    <p class="text-center font-weight-bold">
+        OR
+    </p>
+
+    <div class="d-flex justify-content-center">
+        <a href="{{ path('login_google') }}"><img src="/assets/img/google-log-in.png" width="300px" alt="Login with Google"></a>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <a href="{{ path('app_signup') }}">Signup</a>
+    </div>
+
+    </form>
+{% endblock %}
