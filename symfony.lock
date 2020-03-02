@@ -153,6 +153,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "knplabs/knp-time-bundle": {
+        "version": "v1.11.0"
+    },
     "knpuniversity/oauth2-client-bundle": {
         "version": "1.20",
         "recipe": {
@@ -528,6 +531,9 @@
     },
     "symfony/string": {
         "version": "v5.0.4"
+    },
+    "symfony/templating": {
+        "version": "v5.0.5"
     },
     "symfony/test-pack": {
         "version": "v1.0.6"
