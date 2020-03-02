@@ -12,7 +12,13 @@
             <div class="card">
                 <h5 class="card-header">Change Profile Picture</h5>
                 <div class="card-body">
-                    <img src="{{ asset("app_uploads/users/profile/" ~ app.user.getProfilePicture) }}" class="card-img-top mb-3">
+                    {# For social login, we will get profile picture URL not our local path #}
+                    {% if "http" in app.user.getProfilePicture|slice(0,4) %}
+                        <img src="{{ app.user.getProfilePicture }}" class="card-img-top mb-3">
+                    {% else %}
+                        <img src="{{ asset("app_uploads/users/profile/" ~ app.user.getProfilePicture) }}" class="card-img-top mb-3">
+                    {% endif %}
+
                     {{ form(profilePictureForm) }}
                 </div>
             </div>
