@@ -27,3 +27,8 @@
 /.phpcs-cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
+
+###> App Uploads directories ###
+/public/app_uploads/users/profile/*
+!/public/app_uploads/users/profile/.gitkeep
+###< squizlabs/php_codesniffer ###
