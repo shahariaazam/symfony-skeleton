@@ -5,57 +5,36 @@
         <li class="nav-item">
             <a class="nav-link {{ currentPath == "/" ? "active" : "" }}" href="{{ path("app_homepage") }}">
                 <span data-feather="rss"></span>
-                Social Feeds <span class="sr-only">(current)a</span>
+                Dashboard <span class="sr-only">(current)a</span>
             </a>
         </li>
     </ul>
 
-    {# Manage Notification #}
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path("app_homepage") }}">
-                <span data-feather="bell"></span>
-                {#Notifications {% if app.user.getUnreadNotifications is not empty %}<span class="text-danger font-weight-bold">{{ app.user.getUnreadNotifications|length }}</span>{% endif %}#}
-            </a>
-        </li>
-    </ul>
-
-    {# Admin Navigation: If logged in user is Admin then they can easily click and go to admin panel #}
-    {% if 'ROLE_ADMIN' in app.user.getRoles %}
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path("app_homepage") }}">
-                    <span data-feather="settings"></span>
-                    Admin Panel
-                </a>
-            </li>
-        </ul>
-    {% endif %}
-    {# End of Admin Navigation #}
-
-    {# Group related navigations #}
+    {# Manage your accounts #}
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Groups</span>
-        <a class="d-flex align-items-center text-muted" href="{{ path("app_homepage") }}" aria-label="Add a new Group">
-            <span data-feather="plus-circle"></span>
-        </a>
+        <span>Manage Your Account</span>
     </h6>
     <ul class="nav flex-column mb-2">
-        {# Browse groups that has been created by the current user #}
+        {# Manage your profile #}
         <li class="nav-item">
-            <a class="nav-link" href="{{ path("app_homepage") }}">
+            <a class="nav-link {{ currentPath == "/profile" ? "active" : "" }}" href="{{ path("profile") }}">
                 <span data-feather="users"></span>
-                Your Groups
-            </a>
-        </li>
-
-        {# Discover or search new group to join #}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path("app_homepage") }}">
-                <span data-feather="search"></span>
-                Search Groups
+                My Profile
             </a>
         </li>
     </ul>
-    {# End of Group navigation #}
+
+    {# Manage your accounts #}
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span> </span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        {# Manage your profile #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path("app_logout") }}">
+                <span data-feather="log-out"></span>
+                Logout
+            </a>
+        </li>
+    </ul>
 </div>
