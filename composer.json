@@ -5,6 +5,7 @@
         "php": "^7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "gedmo/doctrine-extensions": "^2.4",
         "knplabs/knp-time-bundle": "^1.11",
