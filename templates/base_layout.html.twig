@@ -61,7 +61,7 @@
     {#<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">#}
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link" href="{{ path("app_logout") }}">Sign out</a>
+            <a class="nav-link" href="{{ path("profile") }}">Hello, {{ app.getUser.getFullName }}</a>
         </li>
     </ul>
 </nav>
@@ -69,12 +69,14 @@
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-
             {# Include main sidebar HTML that includes sidebar navigation #}
             {% include "includes/sidebar_main.html.twig" %}
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
+            {# Dismissable flash message view #}
+            {% include "includes/flash.html.twig" %}
 
             {# Important! Override this 'content' block from child view #}
             {% block body %}{% endblock %}
