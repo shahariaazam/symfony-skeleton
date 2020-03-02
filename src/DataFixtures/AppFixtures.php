@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
             ->setLastName('Administrator')
             ->setProfilePicture('https://symfony.com/logos/symfony_black_03.png')
             ->setEmail('admin@example.com')
-            ->setPassword('password')
+            ->setPassword(password_hash('password', PASSWORD_BCRYPT))
             ->setRoles(['ROLE_SUPER_ADMIN'])
             ->setGender('male')
             ->setIsTosAccepted(true)
