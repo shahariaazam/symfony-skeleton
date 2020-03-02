@@ -8,7 +8,16 @@
     </div>
 
     <div class="row mb-5">
-        <div class="col-12">
+        <div class="col-sm-12 col-md-4 mb-3">
+            <div class="card">
+                <h5 class="card-header">Change Profile Picture</h5>
+                <div class="card-body">
+                    <img src="{{ asset("app_uploads/users/profile/" ~ app.user.getProfilePicture) }}" class="card-img-top mb-3">
+                    {{ form(profilePictureForm) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-8">
             <div class="card">
                 <h5 class="card-header">Update your profile</h5>
                 <div class="card-body">
