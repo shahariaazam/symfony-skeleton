@@ -29,6 +29,30 @@ class AuthControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
+    public function testLoginWithGoogleRoute()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/login/google');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    public function testLogoutRouteWithoutLogin()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/logout');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    public function testLogoutRouteAfterLogin()
+    {
+        $client = AuthControllerTest::getAuthenticatedClient();
+        $client->request('GET', '/logout');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
     /**
      * Test successful signup and auto login to dashboard.
      */

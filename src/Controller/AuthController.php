@@ -86,16 +86,22 @@ class AuthController extends AbstractController
 
     /**
      * @Route("/login/google/check", name="login_google_check")
+     *
+     * @codeCoverageIgnoreStart
      */
     public function loginWithGoogleCheck()
     {
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * @Route("/logout", name="app_logout")
+     *
+     * @codeCoverageIgnoreStart
      */
     public function logout()
     {
         throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
+    // @codeCoverageIgnoreEnd
 }

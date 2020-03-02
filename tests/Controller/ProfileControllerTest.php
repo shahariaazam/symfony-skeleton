@@ -6,13 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ProfileControllerTest extends WebTestCase
 {
-    public function testIndexWithoutLogin()
+    public function testIndex()
     {
-        $client = static::createClient();
+        $client = AuthControllerTest::getAuthenticatedClient();
         $client->request('GET', '/profile');
-
-        $this->assertTrue($client->getResponse()->isRedirection());
-        $this->assertTrue($client->getResponse()->isRedirect('/login'));
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 }
