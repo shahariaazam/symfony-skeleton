@@ -21,6 +21,41 @@ class AuthControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
+    public function testSignupRoute()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/signup');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Test successful signup and auto login to dashboard.
+     */
+    public function testSuccessfulSignupAndAutoLoginToDashboard()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/signup');
+        $buttonCrawlerNode = $crawler->selectButton('Create Account');
+
+        // Passing known (data added by Fixture) values to test
+        $form = $buttonCrawlerNode->form([
+            'registration_form[first_name]' => 'Hello',
+            'registration_form[last_name]' => 'Symfony',
+            'registration_form[email]' => 'hello-symfony@example.com',
+            'registration_form[is_tos_accepted]' => true,
+            'registration_form[password]' => 'password',
+        ], 'POST');
+
+        $client->submit($form);
+        $this->assertTrue($client->getResponse()->isRedirect());
+
+        $crawler = $client->followRedirect();
+
+        // After signup it will redirect to dashboard with auto-login
+        $this->assertContains('Logout', $crawler->text());
+    }
+
     /**
      * Test successful login and after login it will redirect to main dashboard page.
      */
