@@ -41,6 +41,34 @@ class ProfileControllerTest extends WebTestCase
     }
 
     /**
+     * Test update general profile successfully.
+     */
+    public function testUpdateGeneralProfileExceptEmail()
+    {
+        $client = AuthControllerTest::getAuthenticatedClient();
+        $crawler = $client->request('GET', '/profile');
+
+        $buttonCrawlerNode = $crawler->selectButton('Update Profile');
+
+        // Update general profile data
+        $form = $buttonCrawlerNode->form([
+            'profile[first_name]' => 'First name',
+            'profile[last_name]' => 'Last name',
+            'profile[email]' => 'update@example.com',
+            'profile[gender]' => 1,
+            'profile[timezone]' => 'America/New_York',
+        ], 'POST');
+
+        $client->submit($form);
+
+        $client->getResponse()->isRedirect('/profile');
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('Your profile has been updated', $crawler->text());
+        $this->assertNotContains('update@example.com', $crawler->text());
+    }
+
+    /**
      * Test password change.
      */
     public function testUpdatePasswordSuccessfully()
