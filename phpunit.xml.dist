@@ -18,16 +18,23 @@
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
+            <exclude>src/Migrations</exclude>
+            <exclude>src/DataFixtures</exclude>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">src/Migrations</directory>
+                <directory suffix=".php">src/DataFixtures</directory>
+            </exclude>
         </whitelist>
     </filter>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="\DAMA\DoctrineTestBundle\PHPUnit\PHPUnitListener"/>
     </listeners>
 </phpunit>
