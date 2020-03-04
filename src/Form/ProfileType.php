@@ -30,6 +30,9 @@ class ProfileType extends AbstractType
                 'disabled' => true,
                 'help' => 'You can\'t change email address',
             ])
+            ->add('user_slug', TextType::class, [
+                'help' => 'Your public profile URL can be changed if you update it',
+            ])
             ->add('gender', ChoiceType::class, [
                 'choices' => [
                     'Select gender' => null,

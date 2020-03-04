@@ -32,5 +32,13 @@ services:
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
 
+    # Doctrine Sluggable extension
+    gedmo.listener.sluggable:
+        class: Gedmo\Sluggable\SluggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

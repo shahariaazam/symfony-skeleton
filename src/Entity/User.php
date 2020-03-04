@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\HasLifecycleCallbacks
@@ -80,6 +81,13 @@ class User implements UserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $last_logged_in_at;
+
+    /**
+     * @Gedmo\Slug(fields={"first_name", "last_name"})
+     *
+     * @ORM\Column(type="string", length=80, unique=true)
+     */
+    private $user_slug;
 
     public function getId(): ?int
     {
@@ -243,6 +251,18 @@ class User implements UserInterface
     public function setLastLoggedInAt(?\DateTimeInterface $last_logged_in_at): self
     {
         $this->last_logged_in_at = $last_logged_in_at;
+
+        return $this;
+    }
+
+    public function getUserSlug(): ?string
+    {
+        return $this->user_slug;
+    }
+
+    public function setUserSlug(string $user_slug): self
+    {
+        $this->user_slug = $user_slug;
 
         return $this;
     }
