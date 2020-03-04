@@ -91,4 +91,12 @@ class ProfileControllerTest extends WebTestCase
 
         $this->assertContains('Your password has been updated', $crawler->text());
     }
+
+    public function testPublicUrl()
+    {
+        $client = AuthControllerTest::getAuthenticatedClient();
+        $client->request('GET', '/p/symfony-administrator');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
 }
