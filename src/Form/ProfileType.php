@@ -30,7 +30,6 @@ class ProfileType extends AbstractType
                 'disabled' => true,
                 'help' => 'You can\'t change email address',
             ])
-            ->add('profile_picture')
             ->add('gender', ChoiceType::class, [
                 'choices' => [
                     'Select gender' => null,
