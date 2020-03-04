@@ -118,10 +118,10 @@ class ProfileController extends AbstractController
      */
     public function publicUrl(string $user_slug, UserRepository $userRepository)
     {
-        $user= $userRepository->findOneBy(['user_slug' => $user_slug]);
+        $user = $userRepository->findOneBy(['user_slug' => $user_slug]);
 
-        return $this->render("profile/public.html.twig", [
-            'user' => $user
+        return $this->render('profile/public.html.twig', [
+            'user' => $user,
         ]);
     }
 }
