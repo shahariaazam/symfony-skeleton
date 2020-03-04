@@ -3,10 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\HasLifecycleCallbacks
@@ -65,7 +65,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $profile_picture = "http://lorempixel.com/800/800/abstract";
+    private $profile_picture = 'http://lorempixel.com/800/800/abstract';
 
     /**
      * @ORM\Column(type="string", length=6, nullable=true)
@@ -75,7 +75,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=20)
      */
-    private $timezone = "UTC";
+    private $timezone = 'UTC';
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -192,7 +192,7 @@ class User implements UserInterface
 
     public function getFullName(): ?string
     {
-        return $this->first_name . " " . $this->last_name;
+        return $this->first_name.' '.$this->last_name;
     }
 
     public function getIsTosAccepted(): ?bool

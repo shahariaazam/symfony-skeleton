@@ -100,7 +100,7 @@ class PasswordAuthenticator extends AbstractFormLoginAuthenticator implements Pa
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse("/");
+        return new RedirectResponse('/');
     }
 
     protected function getLoginUrl()

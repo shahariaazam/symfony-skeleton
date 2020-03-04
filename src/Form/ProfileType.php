@@ -20,11 +20,11 @@ class ProfileType extends AbstractType
             ->add('first_name', TextType::class, [
                 'help' => 'Provide your first name',
                 'required' => true,
-                'attr' => ['maxlength' => 80]
+                'attr' => ['maxlength' => 80],
             ])
             ->add('last_name', TextType::class, [
                 'help' => 'Provide your last name',
-                'attr' => ['maxlength' => 80]
+                'attr' => ['maxlength' => 80],
             ])
             ->add('email', EmailType::class, [
                 'disabled' => true,

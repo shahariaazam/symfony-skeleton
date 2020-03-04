@@ -1,10 +1,7 @@
 <?php
 /**
- * UuidTraits class
- *
- * @package  App\Entity
+ * UuidTraits class.
  */
-
 
 namespace App\Entity;
 
@@ -29,8 +26,6 @@ trait UuidTraits
 
     /**
      * @ORM\PrePersist
-     *
-     * @return void
      */
     public function setUuidValue(): void
     {

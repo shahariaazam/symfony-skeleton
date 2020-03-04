@@ -50,7 +50,7 @@ class AuthController extends AbstractController
 
         return $this->render('auth/signup.html.twig', [
             'form' => $form->createView(),
-            'error' => null
+            'error' => null,
         ]);
     }
 
@@ -92,6 +92,7 @@ class AuthController extends AbstractController
     public function loginWithGoogleCheck()
     {
     }
+
     // @codeCoverageIgnoreEnd
 
     /**
@@ -103,5 +104,6 @@ class AuthController extends AbstractController
     {
         throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
+
     // @codeCoverageIgnoreEnd
 }
