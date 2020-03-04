@@ -1,0 +1,23 @@
+{% extends 'public_profile_layout.html.twig' %}
+
+{% block title %}{{ user.getFullName }}{% endblock %}
+
+{% block body %}
+    <div class="row row-cols-1 row-cols-md-2 mt-5 d-flex justify-content-center">
+        <div class="col mb-12">
+            <div class="card">
+                {# For social login, we will get profile picture URL not our local path #}
+                {% if "http" in user.getProfilePicture|slice(0,4) %}
+                    <img src="{{ user.getProfilePicture }}" class="card-img-top" height="100px">
+                {% else %}
+                    <img src="{{ asset("app_uploads/users/profile/" ~ user.getProfilePicture) }}" class="card-img-top" style="height: 100px">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.getFullName }}</h5>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

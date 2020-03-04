@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\PasswordUpdateType;
 use App\Form\ProfilePictureType;
 use App\Form\ProfileType;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -107,6 +108,20 @@ class ProfileController extends AbstractController
             'profileGenralForm' => $profileGeneralForm->createView(),
             'passwordUpdateForm' => $passwordUpdateForm->createView(),
             'profilePictureForm' => $profilePictureForm->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/p/{user_slug}", name="profile_public_url")
+     *
+     * @return RedirectResponse|Response
+     */
+    public function publicUrl(string $user_slug, UserRepository $userRepository)
+    {
+        $user= $userRepository->findOneBy(['user_slug' => $user_slug]);
+
+        return $this->render("profile/public.html.twig", [
+            'user' => $user
         ]);
     }
 }
