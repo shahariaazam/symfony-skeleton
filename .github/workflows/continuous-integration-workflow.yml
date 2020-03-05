@@ -20,6 +20,7 @@ jobs:
     container: php:7.4-cli-alpine
 
     steps:
+      - uses: actions/checkout@v2
       - name: Install related libraries for alpine docker image
         run: |
           apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS

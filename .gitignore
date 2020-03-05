@@ -35,4 +35,7 @@
 
 ###> GitHub actions related tmp file ###
 /_PipelineMapping/
+/_temp/
+/_tool/
+/_actions/
 ###< squizlabs/php_codesniffer ###
