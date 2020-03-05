@@ -1,0 +1,39 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-latest
+
+    env:
+      APP_NAME: "Symfony Dashboard"
+      KERNEL_CLASS: "App\\Kernel"
+      APP_SECRET: "$ecretf0rt3st"
+      SYMFONY_DEPRECATIONS_HELPER: "999999"
+      PANTHER_APP_ENV: "panther"
+      DATABASE_URL: "mysql://root:root@localhost:3306/symfony?serverVersion=5.7"
+      GOOGLE_OAUTH2_CLIENT_ID: "xxxxxxxx"
+      GOOGLE_OAUTH2_CLIENT_SECRET: "xxxxxxx"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: '7.4'
+          coverage: xdebug
+          extensions: xdebug, intl, pdo_mysql, pdo
+      - name: Install composer
+        run: curl --show-error --silent https://getcomposer.org/installer | php
+      - name: Install composer dependencies
+        run: php composer.phar install
+      - name: Create DB
+        run: mysql -uroot -proot -e "CREATE DATABASE symfony;"
+      - name: Run PHPUnit tests
+        run: ./bin/phpunit --configuration phpunit.xml.dist
+      - name: Downloading scrutinizer ocular.phar
+        run: wget https://scrutinizer-ci.com/ocular.phar
+      - name: Uploading code coverage to scrutinize
+        run: php ocular.phar code-coverage:upload --format=php-clover ./build/coverage/log/coverage.xml

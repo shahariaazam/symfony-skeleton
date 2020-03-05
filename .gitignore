@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -10,6 +9,7 @@
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
+/build/
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
@@ -31,4 +31,12 @@
 ###> App Uploads directories ###
 /public/app_uploads/users/profile/*
 !/public/app_uploads/users/profile/.gitkeep
+###< squizlabs/php_codesniffer ###
+
+###> GitHub actions related tmp file ###
+/_PipelineMapping/
+/_temp/
+/_tool/
+/_actions/
+/symfony-user-profile-skeleton/
 ###< squizlabs/php_codesniffer ###
