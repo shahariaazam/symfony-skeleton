@@ -38,4 +38,5 @@
 /_temp/
 /_tool/
 /_actions/
+/symfony-user-profile-skeleton/
 ###< squizlabs/php_codesniffer ###
