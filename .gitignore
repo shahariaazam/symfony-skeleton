@@ -32,3 +32,7 @@
 /public/app_uploads/users/profile/*
 !/public/app_uploads/users/profile/.gitkeep
 ###< squizlabs/php_codesniffer ###
+
+###> GitHub actions related tmp file ###
+/_PipelineMapping/
+###< squizlabs/php_codesniffer ###

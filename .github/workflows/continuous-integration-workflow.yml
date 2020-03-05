@@ -13,6 +13,6 @@ jobs:
 
     steps:
       - name: My first step
-        uses: docker://gcr.io/cloud-builders/gradle
+        uses: docker://php:7.4-cli-alpine
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
