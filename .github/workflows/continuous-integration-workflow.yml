@@ -11,9 +11,15 @@ jobs:
 
     runs-on: self-hosted
 
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 8080:80
+
+    container: php:7.4-cli-alpine
+
     steps:
-      - name: My first step
-        uses: docker://php:7.4-cli-alpine
       - name: Install related libraries for alpine docker image
         run: |
           apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS
