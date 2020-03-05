@@ -27,7 +27,7 @@ build:
     - docker push $IMAGE_TAG
 
 test:
-  image: php:7.4
+  image: php:7.4-cli-alpine
   variables:
     APP_NAME: "Symfony Dashboard"
     KERNEL_CLASS: "App\\Kernel"
@@ -39,13 +39,15 @@ test:
     GOOGLE_OAUTH2_CLIENT_SECRET: "xxxxxxx"
   script:
     # Install git, the php image doesn't have installed
-    - apt-get update -yqq
-    - apt-get install git libzip-dev zip -yqq
+    - apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS
+    - apk add git libintl icu icu-dev
     - pecl install xdebug
     - docker-php-ext-enable xdebug
-
-    # Install mysql driver
-    - docker-php-ext-install pdo_mysql zip
+    - docker-php-ext-configure intl --enable-intl
+    - docker-php-ext-install pdo pdo_mysql intl
+    - rm -rf /usr/share/php
+    - rm -rf /tmp/*
+    - apk del  .phpize-deps
 
     # Install composer
     - curl --show-error --silent https://getcomposer.org/installer | php
