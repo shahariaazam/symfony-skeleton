@@ -1,0 +1,36 @@
+<div class="sidebar-sticky">
+
+    {# Home of the user #}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link {{ currentPath == "/" ? "active" : "" }}" href="{{ path("app_homepage") }}">
+                <span data-feather="rss"></span>
+                Dashboard <span class="sr-only">(current)a</span>
+            </a>
+        </li>
+    </ul>
+
+    <ul class="nav flex-column mb-2">
+        {# Manage your profile #}
+        <li class="nav-item">
+            <a class="nav-link {{ currentPath == "/admin/users" ? "active" : "" }}" href="{{ path("admin_users") }}">
+                <span data-feather="users"></span>
+                Manage Users
+            </a>
+        </li>
+    </ul>
+
+    {# Manage your accounts #}
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span> </span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        {# Manage your profile #}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path("app_logout") }}">
+                <span data-feather="log-out"></span>
+                Logout
+            </a>
+        </li>
+    </ul>
+</div>

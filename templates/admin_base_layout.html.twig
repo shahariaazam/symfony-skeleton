@@ -1,0 +1,100 @@
+{# Globally accessible variable for this layout #}
+{% set currentPath = path(app.request.attributes.get('_route'),
+    app.request.attributes.get('_route_params')) %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description"
+          content="Skeleton Web app built with Symfony 5.x with authentication and profile management features. It will help you to kick start your project">
+    <meta name="author" content="Shaharia Azam <mail@shaharia.com>">
+
+    {# Page title prefix can be replace from any child view with 'title' block #}
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+
+    {#
+        Disclaimer: This layout has been cloned from https://getbootstrap.com/docs/4.4/examples/dashboard/
+
+        You are advised to use -
+        Custom CSS => dashboard.css
+        Custom JS  => dashboard.js
+
+        Rest of the assets are vendor library and you shouldn't modify those unless you know what you are doing
+    #}
+
+    {# Bootstrap core CSS #}
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    {# Favicons #}
+    <link rel="icon" href="/assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/assets/img/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/assets/img/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/assets/js/manifest.json">
+    <link rel="mask-icon" href="/assets/img/safari-pinned-tab.svg" color="#563d7c">
+    <meta name="msapplication-config" content="/assets/xml/browserconfig.xml">
+    <meta name="theme-color" content="#563d7c">
+
+    {# Metadata spcially for social media sharing & SEO. Override this following block from child view #}
+    {% block page_meta %}{% endblock %}
+
+    {# css_top block will populate extra CSS implemented/required that mentioned in single child-view #}
+    {% block css_top %}{% endblock %}
+
+    {# Push any JS from any specific child view. Mostly essential for using specific 3rd party library that's only required for specific view and required to place before </head> #}
+    {% block js_top %}{% endblock %}
+
+    {# Custom CSS for this app #}
+    <link href="/assets/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{ path("app_homepage") }}">
+
+        {# Symfony Logo SVG #}
+        <img src="/assets/img/symfony_white_02.png" style="width: 90px;">
+        {# End of Symfony Logo SVG #}
+
+    </a>
+    {#<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">#}
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="{{ path("profile") }}">Hello, {{ app.getUser.getFullName }}</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            {# Include main sidebar HTML that includes sidebar navigation #}
+            {% include "includes/sidebar_admin.html.twig" %}
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mb-3">
+
+            {# Dismissable flash message view #}
+            {% include "includes/flash.html.twig" %}
+
+            {# Important! Override this 'content' block from child view #}
+            {% block body %}{% endblock %}
+
+        </main>
+    </div>
+</div>
+
+{# JS vendor libraries. Don't modify these unless necessary #}
+<script src="/assets/js/jquery-3.4.1.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
+
+<script src="/assets/js/feather.min.js"></script> {# JS library for Feather icon #}
+<script src="/assets/js/Chart.min.js"></script> {# Chart library #}
+
+{# Push any JS from any specific child view. Mostly essential for using specific 3rd party library that's only required for specific view (not for all view) and required to place before </body> #}
+{% block js_bottom %}{% endblock %}
+
+<script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
