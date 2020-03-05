@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ProfileControllerTest extends WebTestCase
 {
@@ -98,5 +99,33 @@ class ProfileControllerTest extends WebTestCase
         $client->request('GET', '/p/symfony-administrator');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testProfilePictureUpload()
+    {
+        $client = AuthControllerTest::getAuthenticatedClient();
+        $crawler = $client->request('GET', '/profile');
+
+        // Update general profile data
+        $photo = new UploadedFile(
+            APP_ROOT_DIR.DIRECTORY_SEPARATOR.'public/assets/img/symfony_black_02.png',
+            'symfony_black_02.png',
+            'image/png',
+            null
+        );
+
+        $buttonCrawlerNode = $crawler->selectButton('Change Picture');
+
+        // Update general profile data
+        $form = $buttonCrawlerNode->form([
+            'profile_picture[picture]' => $photo,
+        ], 'POST');
+
+        $client->submit($form);
+
+        $this->assertTrue($client->getResponse()->isRedirect('/profile'));
+        $crawler = $client->followRedirect();
+
+        $this->assertContains('Profile picture has been changed successfully', $crawler->text());
     }
 }

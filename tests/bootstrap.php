@@ -1,5 +1,7 @@
 <?php
 
+define('APP_ROOT_DIR', dirname(__DIR__));
+
 require dirname(__DIR__).'/vendor/autoload.php';
 
 // Run database migration

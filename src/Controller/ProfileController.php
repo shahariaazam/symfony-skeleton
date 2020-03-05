@@ -89,6 +89,7 @@ class ProfileController extends AbstractController
                     );
                 } catch (FileException $e) {
                     $this->addFlash('danger', 'Failed to upload your profile picture. Please try again later');
+                    return $this->redirect($this->generateUrl('profile'));
                 }
 
                 $user->setProfilePicture($newFilename);
