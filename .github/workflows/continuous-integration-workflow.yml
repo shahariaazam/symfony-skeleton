@@ -14,5 +14,20 @@ jobs:
     steps:
       - name: My first step
         uses: docker://php:7.4-cli-alpine
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: vendor/bin/phpunit
+      - name: Install related libraries for alpine docker image
+        run: |
+          apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS
+          apk add git libintl icu icu-dev
+          pecl install xdebug
+          docker-php-ext-enable xdebug
+          docker-php-ext-configure intl --enable-intl
+          docker-php-ext-install pdo pdo_mysql intl
+          rm -rf /usr/share/php
+          rm -rf /tmp/*
+          apk del  .phpize-deps
+      - name: Install composer executable
+        run: curl --show-error --silent https://getcomposer.org/installer | php
+      - name: Install project dependencies
+        run: php composer.phar install
+      - name: Run PHPUnit tests
+        run: ./bin/phpunit --configuration phpunit.xml.dist --coverage-text --colors=never
