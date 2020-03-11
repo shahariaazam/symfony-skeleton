@@ -39,6 +39,63 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
+    App\EventListener\UserEntityLifecycleListener:
+        tags:
+            - # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postUpdate'
+                entity: 'App\Entity\User'
+                lazy: true
+                entity_manager: 'default'
+                method: 'postUpdate'
+
+            - # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'preUpdate'
+                entity: 'App\Entity\User'
+                lazy: true
+                entity_manager: 'default'
+                method: 'preUpdate'
+
+            - # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'prePersist'
+                entity: 'App\Entity\User'
+                lazy: true
+                entity_manager: 'default'
+                method: 'prePersist'
+
+            - # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\User'
+                lazy: true
+                entity_manager: 'default'
+                method: 'postPersist'
+
+            - # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'preRemove'
+                entity: 'App\Entity\User'
+                lazy: true
+                entity_manager: 'default'
+                method: 'preRemove'
+
+            - # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postRemove'
+                entity: 'App\Entity\User'
+                lazy: true
+                entity_manager: 'default'
+                method: 'postRemove'
+
+    App\EventListener\DoctrineEventListener:
+        tags:
+            - # these are the basic options that define the event listener
+                name: 'doctrine.event_listener'
+                event: 'postPersist'
+                priority: 500
+                connection: 'default'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
