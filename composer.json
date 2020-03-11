@@ -1,6 +1,7 @@
 {
+    "name": "shahariaazam/symfony-user-profile-skeleton",
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
     "require": {
         "php": "^7.2.5",
         "ext-ctype": "*",
