@@ -96,6 +96,8 @@ services:
                 event: 'postPersist'
                 priority: 500
                 connection: 'default'
-
+    App\EventListener\DatabaseActivitySubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
