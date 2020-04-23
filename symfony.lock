@@ -111,18 +111,6 @@
     "doctrine/reflection": {
         "version": "v1.1.0"
     },
-    "easycorp/easy-log-handler": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "70062abc2cd58794d2a90274502f81b55cd9951b"
-        },
-        "files": [
-            "config/packages/dev/easy_log_handler.yaml"
-        ]
-    },
     "egulias/email-validator": {
         "version": "2.1.17"
     },
@@ -167,6 +155,9 @@
         "files": [
             "config/packages/knpu_oauth2_client.yaml"
         ]
+    },
+    "laminas/laminas-zendframework-bridge": {
+        "version": "1.0.3"
     },
     "league/oauth2-client": {
         "version": "2.4.1"
@@ -618,6 +609,9 @@
     },
     "twig/twig": {
         "version": "v3.0.3"
+    },
+    "webimpress/safe-writer": {
+        "version": "2.0.1"
     },
     "webmozart/assert": {
         "version": "1.7.0"
