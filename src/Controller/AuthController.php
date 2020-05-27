@@ -21,6 +21,13 @@ class AuthController extends AbstractController
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator): Response
     {
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser()) {
+            $this->addFlash('warning', 'You were already logged in');
+
+            return $this->redirectToRoute('app_homepage');
+        }
+
         // Check whether registration is not diabled
         if ('true' === $this->getParameter('app_signup_disabled')) {
             return $this->render('error_layout.html.twig', [
@@ -82,6 +89,21 @@ class AuthController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('auth/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+    /**
+     * @Route("/reset-password", name="reset_password")
+     */
+    public function resetPassword(): Response
+    {
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser()) {
+            $this->addFlash('warning', 'You were already logged in');
+
+            return $this->redirectToRoute('change_password');
+        }
+
+        return $this->render('auth/reset_password.html.twig');
     }
 
     /**
