@@ -14,7 +14,7 @@ class DefaultController extends AbstractController
     {
         $this->addFlash('success', 'Welcome to Symfony 5.x Dashboard');
 
-        return $this->render('dashboard_layout.html.twig', [
+        return $this->render('default/index.html.twig', [
             'controller_name' => 'DefaultController',
         ]);
     }

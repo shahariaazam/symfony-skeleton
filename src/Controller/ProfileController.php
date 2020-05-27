@@ -28,12 +28,6 @@ class ProfileController extends AbstractController
         $profileGeneralForm = $this->createForm(ProfileType::class, $user);
         $profileGeneralForm->handleRequest($request);
 
-        $passwordUpdateForm = $this->createForm(PasswordUpdateType::class, $user);
-        $passwordUpdateForm->handleRequest($request);
-
-        //var_dump($user->getImageFile());
-        //die();
-
         $profilePictureForm = $this->createForm(ProfilePictureType::class, $user);
         $profilePictureForm->handleRequest($request);
 
@@ -51,20 +45,6 @@ class ProfileController extends AbstractController
         }
 
         /*
-         * Update password
-         */
-        if ($passwordUpdateForm->isSubmitted() && $passwordUpdateForm->isValid()) {
-            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Your password has been updated');
-
-            return $this->redirect($this->generateUrl('profile'));
-        }
-
-        /*
          * Process and update profile picture
          *
          * @TODO we can create a service class to achive this and keep controller class clean
@@ -77,8 +57,10 @@ class ProfileController extends AbstractController
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
 
                 // this is needed to safely include the file name as part of the URL
-                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
-                    $originalFilename);
+                $safeFilename = transliterator_transliterate(
+                    'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
+                    $originalFilename
+                );
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
                 // Move the file to the directory where brochures are stored
@@ -89,6 +71,7 @@ class ProfileController extends AbstractController
                     );
                 } catch (FileException $e) {
                     $this->addFlash('danger', 'Failed to upload your profile picture. Please try again later');
+
                     return $this->redirect($this->generateUrl('profile'));
                 }
 
@@ -107,8 +90,42 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/index.html.twig', [
             'profileGenralForm' => $profileGeneralForm->createView(),
-            'passwordUpdateForm' => $passwordUpdateForm->createView(),
             'profilePictureForm' => $profilePictureForm->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/change-password", name="change_password")
+     *
+     * @return RedirectResponse|Response
+     */
+    public function changePassword(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $user = $this->getUser();
+
+        $passwordUpdateForm = $this->createForm(PasswordUpdateType::class, $user);
+        if (empty($user->getPassword())) {
+            $passwordUpdateForm->remove('current_password');
+        }
+
+        $passwordUpdateForm->handleRequest($request);
+
+        /*
+         * Update password
+         */
+        if ($passwordUpdateForm->isSubmitted() && $passwordUpdateForm->isValid()) {
+            $user->setPassword($passwordEncoder->encodePassword($user, $passwordUpdateForm->get('plain_password')->getData()));
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Your password has been updated');
+
+            return $this->redirect($this->generateUrl('profile'));
+        }
+
+        return $this->render('profile/password.html.twig', [
+            'passwordUpdateForm' => $passwordUpdateForm->createView(),
         ]);
     }
 
