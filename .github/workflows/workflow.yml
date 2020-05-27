@@ -1,12 +1,14 @@
 name: CI
 
+# Git event when this workflow will be triggered
 on: [push, pull_request]
 
+# Job configurations
 jobs:
-  tests:
-
+  run-phpunit:
+    # OS, where this job will run
     runs-on: ubuntu-latest
-
+    # Environment variable for this job
     env:
       APP_NAME: "Symfony Dashboard"
       KERNEL_CLASS: "App\\Kernel"
@@ -16,31 +18,69 @@ jobs:
       DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/symfony?serverVersion=5.7"
       GOOGLE_OAUTH2_CLIENT_ID: "xxxxxxxx"
       GOOGLE_OAUTH2_CLIENT_SECRET: "xxxxxxx"
-
+    # All steps that should be performed for this job
     steps:
+      # Checkout repo
       - uses: actions/checkout@v2
+      # ubuntu-latest come with MySQL. So we need to stop this default MySQL service
       - name: Shutdown Ubuntu MySQL (SUDO)
         run: sudo service mysql stop
-      - name: Create DB
+      # Create Database
+      - name: Create MySQL Database
         uses: mirromutth/mysql-action@v1.1
+        # Configuration
         with:
           mysql version: '5.7'
           mysql database: 'symfony'
           mysql user: 'symfony'
           mysql password: 'symfony'
-      - name: "Install PHP with extensions"
+      # Install PHP with some extensions
+      - name: Install PHP
         uses: shivammathur/setup-php@v1
         with:
           php-version: '7.4'
           coverage: xdebug
           extensions: xdebug, intl, pdo_mysql, pdo
-      - name: Install composer
+      # Download composer.phar
+      - name: Download composer binary
         run: curl --show-error --silent https://getcomposer.org/installer | php
+      # Install all dependencies
       - name: Install composer dependencies
         run: php composer.phar install
+      # Run PHPUnit tests
       - name: Run PHPUnit tests
         run: ./bin/phpunit --configuration phpunit.xml.dist
+      # For coverage and code analysis, upload coverage report to scrutinizer
+      # Download scruitinizer binary
       - name: Downloading scrutinizer ocular.phar
         run: wget https://scrutinizer-ci.com/ocular.phar
-      - name: Uploading code coverage to scrutinize
+      # Upload coverage report to scruitinizer
+      - name: Uploading code coverage to scrutinizer
         run: php ocular.phar code-coverage:upload --format=php-clover ./build/coverage/log/coverage.xml
+
+  check-phpcs:
+    # OS, where this job will run
+    runs-on: ubuntu-latest
+    # Environment variable for this job
+    steps:
+      # Checkout repo
+      - uses: actions/checkout@v2
+      # Install PHP with some extensions
+      - name: Install PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: '7.4'
+          coverage: xdebug
+          extensions: xdebug, intl, pdo_mysql, pdo
+      # Download composer.phar
+      - name: Download composer binary
+        run: curl --show-error --silent https://getcomposer.org/installer | php
+      # Install all dependencies
+      - name: Install composer dependencies
+        run: php composer.phar install
+      # Run PHP Coding Standard checks
+      - name: Run PHPCS
+        run: ./vendor/bin/phpcs -n
+      # Run PHPCS Fixer
+      - name: Run PHPCS Fixer
+        run: ./vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no

@@ -86,7 +86,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "prepare-db": "php bin/console doctrine:migrations:migrate --no-interaction && php bin/console doctrine:fixtures:load --no-interaction"
+        "prepare-db": "php bin/console doctrine:migrations:migrate --no-interaction && php bin/console doctrine:fixtures:load --no-interaction",
+        "check-phpcs": "./vendor/bin/phpcs -n",
+        "phpcbf": "./vendor/bin/phpcbf",
+        "php-cs-fixer": "./vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --using-cache=no",
+        "check-php-cs-fixer": "./vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no"
     },
     "conflict": {
         "symfony/symfony": "*"

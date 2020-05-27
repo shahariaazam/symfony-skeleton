@@ -22,11 +22,11 @@ class AuthController extends AbstractController
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator): Response
     {
         // Check whether registration is not diabled
-        if($this->getParameter('app_signup_disabled') === 'true'){
+        if ('true' === $this->getParameter('app_signup_disabled')) {
             return $this->render('error_layout.html.twig', [
                 'code' => 'Ooops!',
                 'status' => 'Service Disabled',
-                'description' => 'Registration service has been disabled temporarily. Please come back later.'
+                'description' => 'Registration service has been disabled temporarily. Please come back later.',
             ]);
         }
 
@@ -87,11 +87,11 @@ class AuthController extends AbstractController
      */
     public function loginWithGoogle(ClientRegistry $clientRegistry)
     {
-        if($this->getParameter('app_signup_disabled') === 'true'){
+        if ('true' === $this->getParameter('app_signup_disabled')) {
             return $this->render('error_layout.html.twig', [
                 'code' => 'Ooops!',
                 'status' => 'Service Disabled',
-                'description' => 'Registration service has been disabled temporarily. Please come back later.'
+                'description' => 'Registration service has been disabled temporarily. Please come back later.',
             ]);
         }
 
