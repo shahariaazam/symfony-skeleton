@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>{% block title %}Dashboard{% endblock %}</title>
+    <title>{% block title %}Dashboard{% endblock %} - {{ app_global.name }}</title>
     <link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet"/>
     <link href="{{ asset('assets/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
-    <script src="{{ asset('assets/js/all.min.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/js/font_awesome_all.min.js') }}"></script>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark"><a class="navbar-brand"
                                                                    href="{{ path('app_homepage') }}"><img width="90px"
-                                                                                                          src="{{ asset('/assets/img/symfony_white_02.png') }}">
+                                                                                                          src="{{ asset( app_global.logo.light ) }}">
     </a>
     <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i>
     </button>
@@ -83,8 +83,8 @@
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid">
                 <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; Your Website{{ 'now'|date('Y') }}</div>
-                    <div><a href="#">Privacy Policy</a> &middot; <a href="#">Terms &amp; Conditions</a></div>
+                    <div class="text-muted">Copyright &copy; {{ app_global.name }} {{ 'now'|date('Y') }}</div>
+                    <div><a href="{{ app_global.privacy_policy }}">Privacy Policy</a> &middot; <a href="{{ app_global.terms_conditions }}">Terms &amp; Conditions</a></div>
                 </div>
             </div>
         </footer>
