@@ -5,6 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     profile_picture_upload_dir: '%kernel.project_dir%/public/app_uploads/users/profile'
+    app_signup_disabled: '%env(APP_SIGNUP_DISABLED)%'
+    maintenance: '%env(APP_MAINTENANCE_MODE)%'  #'true'/'false'
+    support_email: '%env(APP_SUPPORT_EMAIL)%'  #'true'/'false'
 
 services:
     # default configuration for services in *this* file
@@ -23,6 +26,13 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\EventListener\MaintenanceListener:
+        class: App\EventListener\MaintenanceListener
+        arguments:
+            $container: "@service_container"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     # Doctrine Timestampable extension
     gedmo.listener.timestampable:
