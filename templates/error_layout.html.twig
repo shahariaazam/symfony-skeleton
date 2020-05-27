@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>{% block title %}Dashboard{% endblock %} - {{ app_global.name }}</title>
+    <link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet"/>
+    <script src="{{ asset('assets/js/font_awesome_all.min.js') }}"></script>
+</head>
+<body>
+<div id="layoutError">
+    <div id="layoutError_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="text-center mt-4">
+                            <h1 class="display-1">{{ code }}</h1>
+                            <p class="lead">{{ status }}</p>
+                            <p>{{ description|raw }}</p>
+                            <a href="{{ path('app_homepage') }}"><i class="fas fa-arrow-left mr-1"></i>Return to Homepage</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="layoutError_footer">
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; {{ app_global.name }} {{ 'now'|date('Y') }}</div>
+                    <div>
+                        <a href="{{ app_global.privacy_policy }}">Privacy Policy</a>
+                        &middot;
+                        <a href="{{ app_global.terms_conditions }}">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="{{ asset('assets/js/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/js/scripts.js') }}"></script>
+</body>
+</html>
