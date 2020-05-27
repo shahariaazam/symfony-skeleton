@@ -75,14 +75,14 @@ class ProfileControllerTest extends WebTestCase
     public function testUpdatePasswordSuccessfully()
     {
         $client = AuthControllerTest::getAuthenticatedClient();
-        $crawler = $client->request('GET', '/profile');
+        $crawler = $client->request('GET', '/change-password');
 
         $buttonCrawlerNode = $crawler->selectButton('Change Password');
 
         // Update general profile data
         $form = $buttonCrawlerNode->form([
-            'password_update[password][first]' => '123456',
-            'password_update[password][second]' => '123456',
+            'password_update[plain_password][first]' => '123456',
+            'password_update[plain_password][second]' => '123456',
         ], 'POST');
 
         $client->submit($form);
