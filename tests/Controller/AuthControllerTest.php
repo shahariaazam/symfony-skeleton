@@ -68,7 +68,8 @@ class AuthControllerTest extends WebTestCase
             'registration_form[last_name]' => 'Symfony',
             'registration_form[email]' => 'hello-symfony@example.com',
             'registration_form[is_tos_accepted]' => true,
-            'registration_form[password]' => 'password',
+            'registration_form[password][first]' => 'password',
+            'registration_form[password][second]' => 'password',
         ], 'POST');
 
         $client->submit($form);
@@ -89,7 +90,7 @@ class AuthControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         $crawler = $client->followRedirect();
-        $buttonCrawlerNode = $crawler->selectButton('Sign in');
+        $buttonCrawlerNode = $crawler->selectButton('Login');
 
         // Passing known (data added by Fixture) values to test
         $form = $buttonCrawlerNode->form([
@@ -101,6 +102,35 @@ class AuthControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isRedirect());
 
         $crawler = $client->followRedirect();
+
+        // Login completed and went to the original URL
+        $this->assertContains('Logout', $crawler->text());
+    }
+
+    /**
+     * Test successful login and after login it will redirect to main dashboard page.
+     */
+    public function testLoginSuccessfullyWithRememberMe()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+
+        $crawler = $client->followRedirect();
+        $buttonCrawlerNode = $crawler->selectButton('Login');
+
+        // Passing known (data added by Fixture) values to test
+        $form = $buttonCrawlerNode->form([
+            'email' => 'admin@example.com',
+            'password' => 'password',
+            '_remember_me' => 'on',
+        ], 'POST');
+
+        $client->submit($form);
+        $this->assertTrue($client->getResponse()->isRedirect());
+
+        $crawler = $client->followRedirect();
+
+        $this->assertBrowserHasCookie('REMEMBERME');
 
         // Login completed and went to the original URL
         $this->assertContains('Logout', $crawler->text());

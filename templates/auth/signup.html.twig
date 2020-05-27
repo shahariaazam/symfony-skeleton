@@ -1,6 +1,22 @@
-{% extends 'login_layout.html.twig' %}
+{% extends 'auth_layout.html.twig' %}
+
+{% block title %}Login{% endblock %}
 
 {% block body %}
+    <div class="col-lg-7">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
+            <div class="card-body">
+                {{ form(form) }}
+            </div>
+            <div class="card-footer text-center">
+                <div class="small"><a href="{{ path('app_login') }}">Have an account? Go to login</a></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block old %}
 
     <form class="form-signin" method="post">
 
