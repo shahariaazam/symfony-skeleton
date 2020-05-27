@@ -9,6 +9,8 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
@@ -19,7 +21,7 @@ class AuthController extends AbstractController
     /**
      * @Route("/signup", name="app_signup")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator, MailerInterface $mailer): Response
     {
         // If user is already logged in, they will be redirected to homepage
         if ($this->getUser()) {
@@ -55,6 +57,13 @@ class AuthController extends AbstractController
             $entityManager->flush();
 
             // do anything else you need here, like send an email
+            $email = (new Email())
+                ->to($user->getEmail())
+                ->subject('Time for Symfony Mailer!')
+                ->text('Sending emails is fun again!')
+                ->html('<p>See Twig integration for better HTML integration!</p>');
+
+            $mailer->send($email);
 
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
