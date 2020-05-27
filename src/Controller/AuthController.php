@@ -21,6 +21,15 @@ class AuthController extends AbstractController
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator): Response
     {
+        // Check whether registration is not diabled
+        if($this->getParameter('app_signup_disabled') === 'true'){
+            return $this->render('error_layout.html.twig', [
+                'code' => 'Ooops!',
+                'status' => 'Service Disabled',
+                'description' => 'Registration service has been disabled temporarily. Please come back later.'
+            ]);
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -78,6 +87,14 @@ class AuthController extends AbstractController
      */
     public function loginWithGoogle(ClientRegistry $clientRegistry)
     {
+        if($this->getParameter('app_signup_disabled') === 'true'){
+            return $this->render('error_layout.html.twig', [
+                'code' => 'Ooops!',
+                'status' => 'Service Disabled',
+                'description' => 'Registration service has been disabled temporarily. Please come back later.'
+            ]);
+        }
+
         // It will redirect to Google
         return $clientRegistry
             ->getClient('google_oauth2') // key used in config/packages/knpu_oauth2_client.yaml
