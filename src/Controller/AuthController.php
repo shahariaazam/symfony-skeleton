@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -58,6 +59,7 @@ class AuthController extends AbstractController
 
             // do anything else you need here, like send an email
             $email = (new Email())
+                ->from(new Address($this->getParameter('email_from'), $this->getParameter('email_from_name')))
                 ->to($user->getEmail())
                 ->subject('Time for Symfony Mailer!')
                 ->text('Sending emails is fun again!')
