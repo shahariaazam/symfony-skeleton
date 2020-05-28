@@ -78,7 +78,7 @@ class AuthControllerTest extends WebTestCase
         $crawler = $client->followRedirect();
 
         // After signup it will redirect to dashboard with auto-login
-        $this->assertContains('Logout', $crawler->text());
+        $this->assertContains('Login', $crawler->text());
     }
 
     /**

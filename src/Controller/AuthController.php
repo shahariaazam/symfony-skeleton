@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
 use App\Security\PasswordAuthenticator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -54,26 +55,27 @@ class AuthController extends AbstractController
                 )
             );
 
+            $user->setIsEmailVerified(false);
+            $user->setEmailVerificationToken(uuid_create(UUID_TYPE_DCE));
+            $user->setEmailVerificationTokenExpiredAt((new \DateTime())->add(new \DateInterval('PT24H')));
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Send email verification link
             $email = (new TemplatedEmail())
                 ->from(new Address($this->getParameter('email_from'), $this->getParameter('email_from_name')))
                 ->to($user->getEmail())
-                ->context(['user' => $user])
+                ->context(['user' => $user, 'verification_link' => $request->getSchemeAndHttpHost().'/verify-email?token='.$user->getEmailVerificationToken()])
                 ->subject('Signup completed. Verify email address')
                 ->htmlTemplate('emails/signup_confirmation.html.twig');
 
             $mailer->send($email);
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
+            $this->addFlash('success', 'Please check your inbox to verify email address');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('auth/signup.html.twig', [
@@ -116,6 +118,44 @@ class AuthController extends AbstractController
         }
 
         return $this->render('auth/reset_password.html.twig');
+    }
+
+    /**
+     * @Route("/verify-email", name="verify_email")
+     */
+    public function verifyEmail(Request $request, UserRepository $repository): Response
+    {
+        $token = $request->query->get('token');
+        if (empty($token)) {
+            $this->addFlash('warning', 'Invalid verification token');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser() && $this->getUser()->getIsEmailVerified()) {
+            $this->addFlash('warning', 'Your email address was already verified');
+
+            return $this->redirectToRoute('profile');
+        }
+
+        $user = $repository->findOneBy(['email_verification_token' => $token]);
+        if (empty($user)) {
+            $this->addFlash('warning', 'Invalid verification token');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user->setIsEmailVerified(true);
+        $user->setEmailVerificationTokenExpiredAt(null);
+        $user->setEmailVerificationToken(null);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Email address verification successful');
+        return $this->redirectToRoute('app_login');
     }
 
     /**

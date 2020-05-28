@@ -89,6 +89,21 @@ class User implements UserInterface
      */
     private $user_slug;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_email_verified = false;
+
+    /**
+     * @ORM\Column(type="string", length=36, nullable=true)
+     */
+    private $email_verification_token;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $email_verification_token_expired_at;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -263,6 +278,42 @@ class User implements UserInterface
     public function setUserSlug(string $user_slug): self
     {
         $this->user_slug = $user_slug;
+
+        return $this;
+    }
+
+    public function getIsEmailVerified(): ?bool
+    {
+        return $this->is_email_verified;
+    }
+
+    public function setIsEmailVerified(bool $is_email_verified): self
+    {
+        $this->is_email_verified = $is_email_verified;
+
+        return $this;
+    }
+
+    public function getEmailVerificationToken(): ?string
+    {
+        return $this->email_verification_token;
+    }
+
+    public function setEmailVerificationToken(?string $email_verification_token): self
+    {
+        $this->email_verification_token = $email_verification_token;
+
+        return $this;
+    }
+
+    public function getEmailVerificationTokenExpiredAt(): ?\DateTimeInterface
+    {
+        return $this->email_verification_token_expired_at;
+    }
+
+    public function setEmailVerificationTokenExpiredAt(?\DateTimeInterface $email_verification_token_expired_at): self
+    {
+        $this->email_verification_token_expired_at = $email_verification_token_expired_at;
 
         return $this;
     }
