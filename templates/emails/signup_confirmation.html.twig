@@ -1,0 +1,31 @@
+{% extends "emails/actions_layout.html.twig" %}
+
+{% block body %}
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="content-block">
+                Hello {{ user.getFirstName ~ ' ' ~ user.getLastName }},
+            </td>
+        </tr>
+        <tr>
+            <td class="content-block">
+                Please confirm your email address by clicking the link below. {{ email.toName }}
+            </td>
+        </tr>
+        <tr>
+            <td class="content-block">
+                We may need to send you critical information about our service and it is important that we have an accurate email address.
+            </td>
+        </tr>
+        <tr>
+            <td class="content-block">
+                <a href="#" class="btn-primary">Confirm email address</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="content-block">
+                &mdash; {{ app_global.name }}
+            </td>
+        </tr>
+    </table>
+{% endblock %}

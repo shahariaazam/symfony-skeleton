@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\PasswordAuthenticator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,12 +59,12 @@ class AuthController extends AbstractController
             $entityManager->flush();
 
             // do anything else you need here, like send an email
-            $email = (new Email())
+            $email = (new TemplatedEmail())
                 ->from(new Address($this->getParameter('email_from'), $this->getParameter('email_from_name')))
                 ->to($user->getEmail())
-                ->subject('Time for Symfony Mailer!')
-                ->text('Sending emails is fun again!')
-                ->html('<p>See Twig integration for better HTML integration!</p>');
+                ->context(['user' => $user])
+                ->subject('Signup completed. Verify email address')
+                ->htmlTemplate('emails/signup_confirmation.html.twig');
 
             $mailer->send($email);
 

@@ -33,10 +33,13 @@
         "symfony/serializer-pack": "*",
         "symfony/string": "5.0.*",
         "symfony/translation": "5.0.*",
+        "symfony/twig-bundle": "5.0.*",
         "symfony/twig-pack": "*",
         "symfony/validator": "5.0.*",
         "symfony/web-link": "5.0.*",
-        "symfony/yaml": "5.0.*"
+        "symfony/yaml": "5.0.*",
+        "twig/cssinliner-extra": "^3.0",
+        "twig/extra-bundle": "^3.0"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.3",
