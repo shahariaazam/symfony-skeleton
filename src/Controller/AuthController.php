@@ -155,6 +155,7 @@ class AuthController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Email address verification successful');
+
         return $this->redirectToRoute('app_login');
     }
 
