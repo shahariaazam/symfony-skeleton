@@ -143,6 +143,7 @@ class AuthController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Password has been changed successfully');
+
                 return $this->redirectToRoute('app_login');
             }
 
