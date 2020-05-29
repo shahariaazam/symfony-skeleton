@@ -164,4 +164,99 @@ class AuthControllerTest extends WebTestCase
 
         return $client;
     }
+
+    public function testResetPasswordShouldRedirectToChangePasswordIfUserAlreadyLoggedIn()
+    {
+        $client = $this->getAuthenticatedClient();
+        $client->request('GET', '/reset-password');
+
+        $this->assertTrue($client->getResponse()->isRedirect('/change-password'));
+
+        $crawler = $client->followRedirect();
+        $this->assertContains('You were already logged in', $crawler->text());
+    }
+
+    public function testResetPasswordInitialRequest()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/reset-password');
+
+        $buttonCrawlerNode = $crawler->selectButton('Reset Password');
+
+        // Passing known (data added by Fixture) values to test
+        $form = $buttonCrawlerNode->form([
+            'reset_password[email]' => 'admin@example.com',
+        ], 'POST');
+
+        $client->submit($form);
+        $this->assertTrue($client->getResponse()->isRedirect('/login'));
+
+        $crawler = $client->followRedirect();
+        $this->assertContains('Password reset instruction has been sent to your inbox', $crawler->text());
+    }
+
+    public function testResetPasswordInitialRequestWithInvalidEmail()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/reset-password');
+
+        $buttonCrawlerNode = $crawler->selectButton('Reset Password');
+
+        // Passing known (data added by Fixture) values to test
+        $form = $buttonCrawlerNode->form([
+            'reset_password[email]' => 'fake@email.com',
+        ], 'POST');
+
+        $client->submit($form);
+        $this->assertTrue($client->getResponse()->isRedirect('/login'));
+
+        $crawler = $client->followRedirect();
+        $this->assertContains('No email address found in our system', $crawler->text());
+    }
+
+    public function testResetPasswordWithValidToken()
+    {
+        $client = static::createClient();
+
+        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
+        $userRepository = $em->getRepository(User::class);
+
+        /**
+         * @var $user User
+         */
+        $user = $userRepository->findOneBy(['email' => 'admin@example.com']);
+        $user->setResetPasswordToken('abc');
+        $em->persist($user);
+        $em->flush();
+
+        $crawler = $client->request('GET', '/reset-password?token='.$user->getResetPasswordToken());
+
+        $buttonCrawlerNode = $crawler->selectButton('Set New Password');
+
+        // Passing known (data added by Fixture) values to test
+        $form = $buttonCrawlerNode->form([
+            'set_password_public[plain_password][first]' => 'password',
+            'set_password_public[plain_password][second]' => 'password',
+            'set_password_public[reset_password_token]' => $user->getResetPasswordToken(),
+        ], 'POST');
+
+        $client->submit($form);
+
+        $this->assertTrue($client->getResponse()->isRedirect('/login'));
+
+        $crawler = $client->followRedirect();
+        $this->assertContains('Password has been changed successfully', $crawler->text());
+    }
+
+    public function testResetPasswordWithInvalidToken()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/reset-password?token=FAKE_TOKEN');
+
+        $this->assertTrue($client->getResponse()->isRedirect('/login'));
+
+        $crawler = $client->followRedirect();
+        $this->assertContains('Invalid token', $crawler->text());
+    }
 }
