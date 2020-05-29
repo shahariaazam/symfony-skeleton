@@ -104,6 +104,16 @@ class User implements UserInterface
      */
     private $email_verification_token_expired_at;
 
+    /**
+     * @ORM\Column(type="string", length=36, nullable=true)
+     */
+    private $reset_password_token;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $reset_password_token_expired_at;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -314,6 +324,30 @@ class User implements UserInterface
     public function setEmailVerificationTokenExpiredAt(?\DateTimeInterface $email_verification_token_expired_at): self
     {
         $this->email_verification_token_expired_at = $email_verification_token_expired_at;
+
+        return $this;
+    }
+
+    public function getResetPasswordToken(): ?string
+    {
+        return $this->reset_password_token;
+    }
+
+    public function setResetPasswordToken(?string $reset_password_token): self
+    {
+        $this->reset_password_token = $reset_password_token;
+
+        return $this;
+    }
+
+    public function getResetPasswordTokenExpiredAt(): ?\DateTimeInterface
+    {
+        return $this->reset_password_token_expired_at;
+    }
+
+    public function setResetPasswordTokenExpiredAt(?\DateTimeInterface $reset_password_token_expired_at): self
+    {
+        $this->reset_password_token_expired_at = $reset_password_token_expired_at;
 
         return $this;
     }

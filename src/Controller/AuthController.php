@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\ResetPasswordType;
+use App\Form\SetPasswordPublicType;
 use App\Repository\UserRepository;
 use App\Security\PasswordAuthenticator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -108,7 +110,7 @@ class AuthController extends AbstractController
     /**
      * @Route("/reset-password", name="reset_password")
      */
-    public function resetPassword(): Response
+    public function resetPassword(Request $request, UserRepository $repository, MailerInterface $mailer, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         // If user is already logged in, they will be redirected to homepage
         if ($this->getUser()) {
@@ -117,7 +119,74 @@ class AuthController extends AbstractController
             return $this->redirectToRoute('change_password');
         }
 
-        return $this->render('auth/reset_password.html.twig');
+        if ($request->query->get('token')) {
+            $passwordResetToken = $request->query->get('token');
+            $user = $repository->findOneBy(['reset_password_token' => $passwordResetToken]);
+            if (empty($user)) {
+                $this->addFlash('danger', 'Invalid token');
+
+                return $this->redirectToRoute('app_login');
+            }
+
+            $setPasswordPublicForm = $this->createForm(SetPasswordPublicType::class);
+            $setPasswordPublicForm->get('reset_password_token')->setData($passwordResetToken);
+            $setPasswordPublicForm->handleRequest($request);
+
+            if ($setPasswordPublicForm->isSubmitted() && $setPasswordPublicForm->isValid()) {
+                $newPassword = $setPasswordPublicForm->get('plain_password')->getData();
+                $user->setResetPasswordToken(null);
+                $user->setResetPasswordTokenExpiredAt(null);
+                $user->setPassword($passwordEncoder->encodePassword($user, $newPassword));
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Password has been changed successfully');
+                return $this->redirectToRoute('app_login');
+            }
+
+            return $this->render('auth/reset_password.html.twig', [
+                'reset_form' => $setPasswordPublicForm->createView(),
+            ]);
+        }
+
+        $passwordResetForm = $this->createForm(ResetPasswordType::class);
+        $passwordResetForm->handleRequest($request);
+        if ($passwordResetForm->isSubmitted() && $passwordResetForm->isValid()) {
+            $user = $repository->findOneBy(['email' => $passwordResetForm->get('email')->getData()]);
+            if (empty($user)) {
+                $this->addFlash('danger', 'No email address found in our system');
+
+                return $this->redirectToRoute('app_login');
+            }
+
+            // Generate reset password token
+            $user->setResetPasswordToken(uuid_create(UUID_TYPE_DCE));
+            $user->setResetPasswordTokenExpiredAt((new \DateTime())->add(new \DateInterval('PT24H')));
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // Send email verification link
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->getParameter('email_from'), $this->getParameter('email_from_name')))
+                ->to($user->getEmail())
+                ->context(['user' => $user, 'password_reset_link' => $request->getSchemeAndHttpHost().'/reset-password?token='.$user->getResetPasswordToken()])
+                ->subject('Password reset instruction - '.$this->getParameter('app_name'))
+                ->htmlTemplate('emails/reset_password.html.twig');
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Password reset instruction has been sent to your inbox');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('auth/reset_password.html.twig', [
+            'reset_form' => $passwordResetForm->createView(),
+        ]);
     }
 
     /**
