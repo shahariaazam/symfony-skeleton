@@ -166,10 +166,8 @@ class AuthControllerTest extends WebTestCase
     }
 
     /**
-     * @param KernelBrowser $client
      * @param $path
      *
-     * @param array $roles
      * @return int
      */
     public static function checkPathIsAccessibleByRoles(KernelBrowser $client, $path, array $roles)

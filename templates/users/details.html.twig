@@ -30,12 +30,20 @@
                             <td>{{ user.getUuid }}</td>
                         </tr>
                         <tr>
-                            <td>Fist Name</td>
+                            <td>Fist bame</td>
                             <td>{{ user.getFirstName }}</td>
                         </tr>
                         <tr>
-                            <td>Last Name</td>
+                            <td>Last name</td>
                             <td>{{ user.getLastName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Email address</td>
+                            <td>{{ user.getEmail }}</td>
+                        </tr>
+                        <tr>
+                            <td>User slug</td>
+                            <td>{{ user.getUserSlug }}</td>
                         </tr>
                         <tr>
                             <td>Gender</td>
@@ -45,6 +53,18 @@
                             <td>Timezone</td>
                             <td>{{ user.getTimezone }}</td>
                         </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">Additional Information</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-md-4">
+                    <table class="table table-condensed">
                         <tr>
                             <td>Last logged in at</td>
                             <td>{{ user.getLastLoggedInAt|ago }}</td>
@@ -56,6 +76,36 @@
                         <tr>
                             <td>Joined at</td>
                             <td data-value="{{ user.getCreatedAt|date('Y-m-d H:i:s') }}">{{ user.getCreatedAt|ago }}</td>
+                        </tr>
+                        <tr>
+                            <td>Last updated at</td>
+                            <td data-value="{{ user.getUpdatedAt|date('Y-m-d H:i:s') }}">{{ user.getUpdatedAt|ago }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-12 col-md-8">
+                    <table class="table table-condensed">
+                        <tr>
+                            <td>Email address verified?</td>
+                            <td>
+                                {% if user.isEmailVerified == "true" %}
+                                    Yes
+                                {% else %}
+                                    {% if user.getEmailVerificationToken is not empty %}
+                                        Pending Verification
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TOS accepted ?</td>
+                            <td>{{ user.getIsTosAccepted == "true" ? "Yes" : "No" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Roles</td>
+                            <td>{{ user.getRoles|join(", ") }}</td>
                         </tr>
                         <tr>
                             <td>Last updated at</td>
