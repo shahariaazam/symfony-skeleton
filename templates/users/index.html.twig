@@ -3,51 +3,55 @@
 {% block title %}Manage Users - Admin Dashboard{% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Manage Users</h1>
-        {#<div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar"></span>
-                This week
-            </button>
-        </div>#}
+    <h1 class="mt-4">All Users</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ path('admin_users') }}">User Manager</a></li>
+        <li class="breadcrumb-item active">List of Users</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-body">Browse the entire list of users who are using this application.</div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    Featured
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                        <td>Name</td>
-                        <td>Email</td>
-                        <td>Gender</td>
-                        <td>Joined At</td>
-                        <td>Last Updated At</td>
-                        <td>Last Logged In</td>
-                        </thead>
+    <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-users mr-1"></i>List of Users</div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Joined At</th>
+                        <th>Last Updated At</th>
+                        <th>Last Logged In</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Joined At</th>
+                        <th>Last Updated At</th>
+                        <th>Last Logged In</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
 
-                        <tbody>
-                        {% for user in users %}
-                            <tr>
-                                <td>{{ user.getFullName }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.gender }}</td>
-                                <td>{{ user.getCreatedAt|date("Y-m-d H:i") }}</td>
-                                <td>{{ user.getUpdatedAt|date("Y-m-d H:i") }}</td>
-                                <td>{{ user.getLastLoggedInAt|date("Y-m-d H:i") }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                    {% for user in users %}
+                    <tr>
+                        <td><a href="{{ path('admin_user_details', { uuid: user.getUuid }) }}">{{ user.getFullName }}</a></td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.gender }}</td>
+                        <td>{{ user.getCreatedAt|date("Y-m-d H:i") }}</td>
+                        <td>{{ user.getUpdatedAt|date("Y-m-d H:i") }}</td>
+                        <td>{{ user.getLastLoggedInAt|date("Y-m-d H:i") }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

@@ -19,4 +19,19 @@ class UsersController extends AbstractController
             'users' => $users,
         ]);
     }
+
+    /**
+     * @Route("/admin/users/{uuid}", name="admin_user_details")
+     */
+    public function details(string $uuid, UserRepository $userRepository)
+    {
+        $user = $userRepository->findOneBy(['uuid' => $uuid]);
+        if (empty($user)) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        return $this->render('users/details.html.twig', [
+            'user' => $user,
+        ]);
+    }
 }

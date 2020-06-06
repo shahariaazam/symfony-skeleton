@@ -1,0 +1,72 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block title %}User details of {{ user.getFullName }} {% endblock %}
+
+{% block body %}
+    <h1 class="mt-4">All Users</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ path('admin_users') }}">User Manager</a></li>
+        <li class="breadcrumb-item active">Profile of {{ user.getFullName }}</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-body">Browse the entire list of users who are using this application.</div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-users mr-1"></i>{{ user.getFullName }}</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-md-4">
+                    {% if "http" in user.getProfilePicture|slice(0,4) %}
+                        <img src="{{ user.getProfilePicture }}" class="card-img-top mb-3">
+                    {% else %}
+                        <img src="{{ asset("app_uploads/users/profile/" ~ user.getProfilePicture) }}" class="card-img-top mb-3">
+                    {% endif %}
+                </div>
+                <div class="col-sm-12 col-md-8">
+                    <table class="table table-condensed user-details">
+                        <tr>
+                            <td>UUID</td>
+                            <td>{{ user.getUuid }}</td>
+                        </tr>
+                        <tr>
+                            <td>Fist Name</td>
+                            <td>{{ user.getFirstName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Last Name</td>
+                            <td>{{ user.getLastName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender</td>
+                            <td>{{ user.getGender }}</td>
+                        </tr>
+                        <tr>
+                            <td>Timezone</td>
+                            <td>{{ user.getTimezone }}</td>
+                        </tr>
+                        <tr>
+                            <td>Last logged in at</td>
+                            <td>{{ user.getLastLoggedInAt|ago }}</td>
+                        </tr>
+                        <tr>
+                            <td>Last logged in at</td>
+                            <td data-value="{{ user.getLastLoggedInAt|date('Y-m-d H:i:s') }}">{{ user.getLastLoggedInAt|ago }}</td>
+                        </tr>
+                        <tr>
+                            <td>Joined at</td>
+                            <td data-value="{{ user.getCreatedAt|date('Y-m-d H:i:s') }}">{{ user.getCreatedAt|ago }}</td>
+                        </tr>
+                        <tr>
+                            <td>Last updated at</td>
+                            <td data-value="{{ user.getUpdatedAt|date('Y-m-d H:i:s') }}">{{ user.getUpdatedAt|ago }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
