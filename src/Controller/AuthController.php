@@ -4,11 +4,18 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\ResetPasswordType;
+use App\Form\SetPasswordPublicType;
+use App\Repository\UserRepository;
 use App\Security\PasswordAuthenticator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
@@ -19,8 +26,15 @@ class AuthController extends AbstractController
     /**
      * @Route("/signup", name="app_signup")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PasswordAuthenticator $authenticator, MailerInterface $mailer): Response
     {
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser()) {
+            $this->addFlash('warning', 'You were already logged in');
+
+            return $this->redirectToRoute('app_homepage');
+        }
+
         // Check whether registration is not diabled
         if ('true' === $this->getParameter('app_signup_disabled')) {
             return $this->render('error_layout.html.twig', [
@@ -43,18 +57,27 @@ class AuthController extends AbstractController
                 )
             );
 
+            $user->setIsEmailVerified(false);
+            $user->setEmailVerificationToken(uuid_create(UUID_TYPE_DCE));
+            $user->setEmailVerificationTokenExpiredAt((new \DateTime())->add(new \DateInterval('PT24H')));
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Send email verification link
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->getParameter('email_from'), $this->getParameter('email_from_name')))
+                ->to($user->getEmail())
+                ->context(['user' => $user, 'verification_link' => $request->getSchemeAndHttpHost().'/verify-email?token='.$user->getEmailVerificationToken()])
+                ->subject('Signup completed. Verify email address')
+                ->htmlTemplate('emails/signup_confirmation.html.twig');
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Please check your inbox to verify email address');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('auth/signup.html.twig', [
@@ -68,16 +91,142 @@ class AuthController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser()) {
+            $this->addFlash('warning', 'You were already logged in');
+
+            return $this->redirectToRoute('app_homepage');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('auth/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+    /**
+     * @Route("/reset-password", name="reset_password")
+     */
+    public function resetPassword(Request $request, UserRepository $repository, MailerInterface $mailer, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser()) {
+            $this->addFlash('warning', 'You were already logged in');
+
+            return $this->redirectToRoute('change_password');
+        }
+
+        if ($request->query->get('token')) {
+            $passwordResetToken = $request->query->get('token');
+            $user = $repository->findOneBy(['reset_password_token' => $passwordResetToken]);
+            if (empty($user)) {
+                $this->addFlash('danger', 'Invalid token');
+
+                return $this->redirectToRoute('app_login');
+            }
+
+            $setPasswordPublicForm = $this->createForm(SetPasswordPublicType::class);
+            $setPasswordPublicForm->get('reset_password_token')->setData($passwordResetToken);
+            $setPasswordPublicForm->handleRequest($request);
+
+            if ($setPasswordPublicForm->isSubmitted() && $setPasswordPublicForm->isValid()) {
+                $newPassword = $setPasswordPublicForm->get('plain_password')->getData();
+                $user->setResetPasswordToken(null);
+                $user->setResetPasswordTokenExpiredAt(null);
+                $user->setPassword($passwordEncoder->encodePassword($user, $newPassword));
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Password has been changed successfully');
+
+                return $this->redirectToRoute('app_login');
+            }
+
+            return $this->render('auth/reset_password.html.twig', [
+                'reset_form' => $setPasswordPublicForm->createView(),
+            ]);
+        }
+
+        $passwordResetForm = $this->createForm(ResetPasswordType::class);
+        $passwordResetForm->handleRequest($request);
+        if ($passwordResetForm->isSubmitted() && $passwordResetForm->isValid()) {
+            $user = $repository->findOneBy(['email' => $passwordResetForm->get('email')->getData()]);
+            if (empty($user)) {
+                $this->addFlash('danger', 'No email address found in our system');
+
+                return $this->redirectToRoute('app_login');
+            }
+
+            // Generate reset password token
+            $user->setResetPasswordToken(uuid_create(UUID_TYPE_DCE));
+            $user->setResetPasswordTokenExpiredAt((new \DateTime())->add(new \DateInterval('PT24H')));
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // Send email verification link
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->getParameter('email_from'), $this->getParameter('email_from_name')))
+                ->to($user->getEmail())
+                ->context(['user' => $user, 'password_reset_link' => $request->getSchemeAndHttpHost().'/reset-password?token='.$user->getResetPasswordToken()])
+                ->subject('Password reset instruction - '.$this->getParameter('app_name'))
+                ->htmlTemplate('emails/reset_password.html.twig');
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Password reset instruction has been sent to your inbox');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('auth/reset_password.html.twig', [
+            'reset_form' => $passwordResetForm->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/verify-email", name="verify_email")
+     */
+    public function verifyEmail(Request $request, UserRepository $repository): Response
+    {
+        $token = $request->query->get('token');
+        if (empty($token)) {
+            $this->addFlash('warning', 'Invalid verification token');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        // If user is already logged in, they will be redirected to homepage
+        if ($this->getUser() && $this->getUser()->getIsEmailVerified()) {
+            $this->addFlash('warning', 'Your email address was already verified');
+
+            return $this->redirectToRoute('profile');
+        }
+
+        $user = $repository->findOneBy(['email_verification_token' => $token]);
+        if (empty($user)) {
+            $this->addFlash('warning', 'Invalid verification token');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user->setIsEmailVerified(true);
+        $user->setEmailVerificationTokenExpiredAt(null);
+        $user->setEmailVerificationToken(null);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Email address verification successful');
+
+        return $this->redirectToRoute('app_login');
     }
 
     /**

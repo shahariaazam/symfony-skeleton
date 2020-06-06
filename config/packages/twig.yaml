@@ -1,6 +1,9 @@
 twig:
     form_themes: ['bootstrap_4_layout.html.twig']
     default_path: '%kernel.project_dir%/templates'
+    paths:
+        # point this wherever your images live
+        '%kernel.project_dir%/public/assets/img/email': email_images
     globals:
         # Few globals configuration
         app_global:

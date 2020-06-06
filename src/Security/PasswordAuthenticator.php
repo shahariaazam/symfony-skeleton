@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
@@ -77,7 +78,13 @@ class PasswordAuthenticator extends AbstractFormLoginAuthenticator implements Pa
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        $isValid = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+
+        if ($isValid) {
+            return true;
+        }
+
+        throw new CustomUserMessageAuthenticationException('Wrong credentials. Please try again with correct credentials');
     }
 
     /**
@@ -103,8 +110,20 @@ class PasswordAuthenticator extends AbstractFormLoginAuthenticator implements Pa
         return new RedirectResponse('/');
     }
 
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        $request->getSession()->getFlashBag()->add('danger', $exception->getMessage());
+
+        return new RedirectResponse($this->urlGenerator->generate('app_login'));
+    }
+
     protected function getLoginUrl()
     {
         return $this->urlGenerator->generate('app_login');
+    }
+
+    public function supportsRememberMe()
+    {
+        return true;
     }
 }

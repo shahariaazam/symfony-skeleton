@@ -23,6 +23,7 @@
         "symfony/http-client": "5.0.*",
         "symfony/intl": "5.0.*",
         "symfony/mailer": "5.0.*",
+        "symfony/messenger": "5.0.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.0.*",
         "symfony/orm-pack": "*",
@@ -32,10 +33,13 @@
         "symfony/serializer-pack": "*",
         "symfony/string": "5.0.*",
         "symfony/translation": "5.0.*",
+        "symfony/twig-bundle": "5.0.*",
         "symfony/twig-pack": "*",
         "symfony/validator": "5.0.*",
         "symfony/web-link": "5.0.*",
-        "symfony/yaml": "5.0.*"
+        "symfony/yaml": "5.0.*",
+        "twig/cssinliner-extra": "^3.0",
+        "twig/extra-bundle": "^3.0"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.3",
@@ -90,7 +94,8 @@
         "check-phpcs": "./vendor/bin/phpcs -n",
         "phpcbf": "./vendor/bin/phpcbf",
         "php-cs-fixer": "./vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --using-cache=no",
-        "check-php-cs-fixer": "./vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no"
+        "check-php-cs-fixer": "./vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no",
+        "phpunit": "./bin/phpunit --configuration phpunit.xml.dist"
     },
     "conflict": {
         "symfony/symfony": "*"

@@ -75,6 +75,7 @@ class GoogleAuthenticator extends SocialAuthenticator
         $user->setEmail($googleUser->getEmail());
         $user->setProfilePicture($googleUser->getAvatar());
         $user->setRoles(['ROLE_USER']);
+        $user->setIsEmailVerified(true);
         $this->em->persist($user);
         $this->em->flush();
 
@@ -110,9 +111,9 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+        $request->getSession()->getFlashBag()->add('danger', $exception->getMessage());
 
-        return new Response($message, Response::HTTP_FORBIDDEN);
+        return new RedirectResponse($this->router->generate('app_login'));
     }
 
     /**
