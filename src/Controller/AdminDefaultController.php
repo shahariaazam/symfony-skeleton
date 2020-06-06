@@ -17,8 +17,9 @@ class AdminDefaultController extends AbstractController
     public function index(UserRepository $userRepository)
     {
         $totalUsers = $userRepository->count([]);
+
         return $this->render('admin/index.html.twig', [
-            'totalUsers' => $totalUsers
+            'totalUsers' => $totalUsers,
         ]);
     }
 }
