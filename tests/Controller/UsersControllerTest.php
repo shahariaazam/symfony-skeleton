@@ -7,6 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UsersControllerTest extends WebTestCase
 {
+    public function testWithoutAdminNobodyCanAccessTheseRoutes()
+    {
+        $client = static::createClient();
+        $statusCode = AuthControllerTest::checkPathIsAccessibleByRoles($client, '/admin/users', ['ROLE_USER']);
+        $this->assertEquals(403, $statusCode);
+    }
+
     public function testIndex()
     {
         $client = AuthControllerTest::getAuthenticatedClient();

@@ -165,6 +165,27 @@ class AuthControllerTest extends WebTestCase
         return $client;
     }
 
+    /**
+     * @param KernelBrowser $client
+     * @param $path
+     *
+     * @param array $roles
+     * @return int
+     */
+    public static function checkPathIsAccessibleByRoles(KernelBrowser $client, $path, array $roles)
+    {
+        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
+        $userRepository = $em->getRepository(User::class);
+
+        $user = $userRepository->findOneBy(['email' => 'admin@example.com']);
+        $user->setRoles($roles);
+
+        $client = AuthControllerTest::getAuthenticatedClient($user, $client);
+        $client->request('GET', $path);
+
+        return $client->getResponse()->getStatusCode();
+    }
+
     public function testResetPasswordShouldRedirectToChangePasswordIfUserAlreadyLoggedIn()
     {
         $client = $this->getAuthenticatedClient();
