@@ -44,14 +44,14 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="{{ path('app_homepage') }}">
+                    <a class="nav-link" href="{{ path('admin_homepage') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                        Dashboard</a>
+                        Admin Home</a>
 
                     {% if 'ROLE_SUPER_ADMIN' in app.getUser.getRoles or 'ROLE_ADMIN' in app.getUser.getRoles %}
-                        <a class="nav-link" href="{{ path('admin_homepage') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-stream"></i></div>
-                            Admin Panel
+                        <a class="nav-link" href="{{ path('app_homepage') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-arrow-alt-circle-left"></i></div>
+                            My Dashboard
                         </a>
                     {% endif %}
 
